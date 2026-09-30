@@ -1,0 +1,371 @@
+local plrs = game:GetService("Players")
+local lp = plrs.LocalPlayer
+
+local function isSafe()
+    for i = 2, 10 do
+        local ok, info = pcall(function() return debug.getinfo(i) end)
+        if not ok or not info then break end
+        local src = info.source or ""
+        
+        if src:lower():find("medusa") or src:lower():find("packages") or src:lower():find("net") then
+            return true
+        end
+        
+        if src:find("%.") then
+            return false
+        end
+    end
+    return true
+end
+
+for _, v in pairs(getgc()) do
+    if typeof(v) == "function" then
+        local info = debug.getinfo(v)
+        if info and info.name then
+            local name = info.name:lower()
+            if name:find("kick") or name:find("ban") or name:find("bxor") or name:find("check") or name:find("anti") then
+                if info.what == "C" and (name == "band" or name == "bxor" or name == "bor" or name == "bnot") then
+                    local cloned = clonefunction(v)
+                    hookfunction(v, function(...)
+                        if isSafe() then return cloned(...) end
+                        return nil
+                    end)
+                else
+                    hookfunction(v, function(...)
+                        return nil
+                    end)
+                end
+            end
+        end
+    end
+end
+
+hookfunction(lp.Kick, function(...)
+    return nil
+end)
+
+lp.CharacterAdded:Connect(function()
+    wait(0.5)
+    pcall(function()
+        hookfunction(lp.Kick, function(...) return nil end)
+    end)
+end)
+print("working")
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local LocalPlayer = Players.LocalPlayer
+local Camera = workspace.CurrentCamera
+local TweenService = game:GetService("TweenService")
+local UserInputService = game:GetService("UserInputService")
+
+
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "Zairos_X"
+ScreenGui.Parent = game.CoreGui
+ScreenGui.ResetOnSpawn = false
+
+local MainFrame = Instance.new("Frame")
+MainFrame.Name = "Main"
+MainFrame.Size = UDim2.new(0, 280, 0, 250)
+MainFrame.Position = UDim2.new(0.5, -140, 0.5, -175)
+MainFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
+MainFrame.BorderSizePixel = 0
+MainFrame.Active = true
+MainFrame.Draggable = true
+MainFrame.Parent = ScreenGui
+
+
+local Corner = Instance.new("UICorner", MainFrame)
+Corner.CornerRadius = UDim.new(0, 12)
+local Stroke = Instance.new("UIStroke", MainFrame)
+Stroke.Color = Color3.fromRGB(255, 0, 85)
+Stroke.Thickness = 2
+
+
+local Title = Instance.new("TextLabel")
+Title.Size = UDim2.new(1, 0, 0, 40)
+Title.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+Title.Text = "FR-HUB\nMURDERERSVS SHERIFFS [🌌DUELS]\n unpatched script\n no more kick no more ban"
+Title.TextColor3 = Color3.fromRGB(255, 255, 255)
+Title.Font = Enum.Font.GothamBold
+Title.TextSize = 10
+Title.Parent = MainFrame
+local TitleCorner = Instance.new("UICorner", Title)
+TitleCorner.CornerRadius = UDim.new(0, 12)
+
+
+
+local ESPBtn = Instance.new("TextButton")
+ESPBtn.Size = UDim2.new(0.9, 0, 0, 45)
+ESPBtn.Position = UDim2.new(0.05, 0, 0.18, 0)
+ESPBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+ESPBtn.Text = "ESP: OFF"
+ESPBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+ESPBtn.Font = Enum.Font.GothamBold
+ESPBtn.TextSize = 14
+ESPBtn.Parent = MainFrame
+Instance.new("UICorner", ESPBtn).CornerRadius = UDim.new(0, 8)
+
+
+local HitboxBtn = Instance.new("TextButton")
+HitboxBtn.Size = UDim2.new(0.9, 0, 0, 45)
+HitboxBtn.Position = UDim2.new(0.05, 0, 0.32, 0)
+HitboxBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+HitboxBtn.Text = "HITBOX: OFF"
+HitboxBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+HitboxBtn.Font = Enum.Font.GothamBold
+HitboxBtn.TextSize = 14
+HitboxBtn.Parent = MainFrame
+Instance.new("UICorner", HitboxBtn).CornerRadius = UDim.new(0, 8)
+
+
+local SizeLabel = Instance.new("TextLabel")
+SizeLabel.Size = UDim2.new(0.9, 0, 0, 25)
+SizeLabel.Position = UDim2.new(0.05, 0, 0.48, 0)
+SizeLabel.BackgroundTransparency = 1
+SizeLabel.Text = "HITBOX SIZE: 10"
+SizeLabel.TextColor3 = Color3.fromRGB(255, 0, 85)
+SizeLabel.Font = Enum.Font.GothamBold
+SizeLabel.TextSize = 12
+SizeLabel.Parent = MainFrame
+
+
+local SliderFrame = Instance.new("Frame")
+SliderFrame.Size = UDim2.new(0.9, 0, 0, 40)
+SliderFrame.Position = UDim2.new(0.05, 0, 0.55, 0)
+SliderFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+SliderFrame.Parent = MainFrame
+Instance.new("UICorner", SliderFrame).CornerRadius = UDim.new(0, 6)
+
+local SliderBar = Instance.new("Frame")
+SliderBar.Size = UDim2.new(0.9, 0, 0, 6)
+SliderBar.Position = UDim2.new(0.05, 0, 0.5, -3)
+SliderBar.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+SliderBar.BorderSizePixel = 0
+SliderBar.Parent = SliderFrame
+Instance.new("UICorner", SliderBar).CornerRadius = UDim.new(1, 0)
+
+local SliderFill = Instance.new("Frame")
+SliderFill.Size = UDim2.new(0.5, 0, 1, 0)
+SliderFill.BackgroundColor3 = Color3.fromRGB(255, 0, 85)
+SliderFill.BorderSizePixel = 0
+SliderFill.Parent = SliderBar
+Instance.new("UICorner", SliderFill).CornerRadius = UDim.new(1, 0)
+
+local SliderKnob = Instance.new("Frame")
+SliderKnob.Size = UDim2.new(0, 16, 0, 16)
+SliderKnob.Position = UDim2.new(0.5, -8, 0.5, -8)
+SliderKnob.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+SliderKnob.Parent = SliderBar
+Instance.new("UICorner", SliderKnob).CornerRadius = UDim.new(1, 0)
+
+
+local Status = Instance.new("TextLabel")
+Status.Size = UDim2.new(0.9, 0, 0, 40)
+Status.Position = UDim2.new(0.05, 0, 0.75, 0)
+Status.BackgroundTransparency = 1
+Status.Text = "ACTIVE! "
+Status.TextColor3 = Color3.fromRGB(0, 255, 100)
+Status.Font = Enum.Font.GothamBold
+Status.TextSize = 14
+Status.Parent = MainFrame
+
+
+local ESP_Enabled = false
+local Hitbox_Enabled = false
+local Hitbox_Size = 10
+local ESP_Tag = "Z_ESP"
+local Connection = nil
+
+
+local function CreateESP(plr)
+    if plr == LocalPlayer then return end
+    
+    local function UpdateChar()
+        local char = plr.Character
+        if not char then return end
+        local head = char:FindFirstChild("Head")
+        if not head then return end
+        
+        if head:FindFirstChild(ESP_Tag) then return end
+        
+        local bill = Instance.new("BillboardGui")
+        bill.Name = ESP_Tag
+        bill.Adornee = head
+        bill.Size = UDim2.new(0, 200, 0, 50)
+        bill.StudsOffset = Vector3.new(0, 2, 0)
+        bill.AlwaysOnTop = true
+        
+        local label = Instance.new("TextLabel")
+        label.Size = UDim2.new(1, 0, 1, 0)
+        label.BackgroundTransparency = 1
+        label.Text = plr.Name
+        label.TextColor3 = Color3.fromRGB(255, 0, 85)
+        label.Font = Enum.Font.GothamBold
+        label.TextSize = 14
+        label.TextStrokeTransparency = 0.5
+        label.Parent = bill
+        
+        bill.Parent = head
+    end
+    
+    UpdateChar()
+    plr.CharacterAdded:Connect(function()
+        wait(0.5)
+        if ESP_Enabled then UpdateChar() end
+    end)
+end
+
+
+local function UpdateHitbox(plr)
+    if plr == LocalPlayer then return end
+    
+    local char = plr.Character
+    if not char then return end
+    
+    local hrp = char:FindFirstChild("HumanoidRootPart")
+    if hrp then
+        if Hitbox_Enabled then
+            hrp.Size = Vector3.new(Hitbox_Size, Hitbox_Size, Hitbox_Size)
+            hrp.Transparency = 0.7
+            hrp.Color = Color3.fromRGB(255, 0, 85)
+            hrp.CanCollide = false
+        else
+            hrp.Size = Vector3.new(2, 2, 1)
+            hrp.Transparency = 1
+        end
+    end
+end
+
+
+ESPBtn.MouseButton1Click:Connect(function()
+    ESP_Enabled = not ESP_Enabled
+    
+    if ESP_Enabled then
+        ESPBtn.Text = "ESP: ON"
+        ESPBtn.BackgroundColor3 = Color3.fromRGB(255, 0, 85)
+        
+        for _, plr in pairs(Players:GetPlayers()) do
+            CreateESP(plr)
+        end
+        
+        
+        Connection = RunService.Heartbeat:Connect(function()
+            for _, plr in pairs(Players:GetPlayers()) do
+                if plr.Character and plr.Character:FindFirstChild("Head") then
+                    if not plr.Character.Head:FindFirstChild(ESP_Tag) then
+                        CreateESP(plr)
+                    end
+                end
+            end
+        end)
+    else
+        ESPBtn.Text = "ESP: OFF"
+        ESPBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+        
+        if Connection then
+            Connection:Disconnect()
+            Connection = nil
+        end
+        
+        
+        for _, plr in pairs(Players:GetPlayers()) do
+            if plr.Character and plr.Character:FindFirstChild("Head") then
+                local tag = plr.Character.Head:FindFirstChild(ESP_Tag)
+                if tag then tag:Destroy() end
+            end
+        end
+    end
+end)
+
+
+HitboxBtn.MouseButton1Click:Connect(function()
+    Hitbox_Enabled = not Hitbox_Enabled
+    
+    if Hitbox_Enabled then
+        HitboxBtn.Text = "HITBOX: ON"
+        HitboxBtn.BackgroundColor3 = Color3.fromRGB(255, 0, 85)
+    else
+        HitboxBtn.Text = "HITBOX: OFF"
+        HitboxBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    end
+    
+    for _, plr in pairs(Players:GetPlayers()) do
+        UpdateHitbox(plr)
+    end
+end)
+
+
+Players.PlayerAdded:Connect(function(plr)
+    plr.CharacterAdded:Connect(function()
+        wait(0.5)
+        if Hitbox_Enabled then UpdateHitbox(plr) end
+        if ESP_Enabled then CreateESP(plr) end
+    end)
+end)
+
+
+local dragging = false
+local sliderWidth = SliderBar.AbsoluteSize.X
+
+local function updateSlider(input)
+    local pos = math.clamp((input.Position.X - SliderBar.AbsolutePosition.X) / sliderWidth, 0, 1)
+    SliderFill.Size = UDim2.new(pos, 0, 1, 0)
+    SliderKnob.Position = UDim2.new(pos, -8, 0.5, -8)
+    
+    Hitbox_Size = math.floor(5 + (pos * 45))
+    SizeLabel.Text = "HITBOX SIZE: " .. Hitbox_Size
+    
+    if Hitbox_Enabled then
+        for _, plr in pairs(Players:GetPlayers()) do
+            UpdateHitbox(plr)
+        end
+    end
+end
+
+SliderKnob.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        dragging = true
+    end
+end)
+
+UserInputService.InputEnded:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        dragging = false
+    end
+end)
+
+UserInputService.InputChanged:Connect(function(input)
+    if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
+        updateSlider(input)
+    end
+end)
+
+SliderBar.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        updateSlider(input)
+    end
+end)
+
+
+RunService.Heartbeat:Connect(function()
+    if Hitbox_Enabled then
+        for _, plr in pairs(Players:GetPlayers()) do
+            if plr.Character then
+                local hrp = plr.Character:FindFirstChild("HumanoidRootPart")
+                if hrp and hrp.Size.X ~= Hitbox_Size then
+                    UpdateHitbox(plr)
+                end
+            end
+        end
+    end
+end)
+
+
+for _, plr in pairs(Players:GetPlayers()) do
+    plr.CharacterAdded:Connect(function()
+        wait(0.5)
+        if ESP_Enabled then CreateESP(plr) end
+        if Hitbox_Enabled then UpdateHitbox(plr) end
+    end)
+end
